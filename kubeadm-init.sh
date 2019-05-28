@@ -7,7 +7,10 @@
 MYIP=`ip route | grep enp0s8 | cut -d " " -f 9`
 
 # become superuser
-sudo -s
+i# become superuser
+if [ "$USER" != "root" ]
+	then echo "RUN AS ROOT"; exit 1
+fi
 # turnoff swap
 swapoff -a
 sed -i 's$/dev/mapper/centos-swap$# /dev/mapper/centos-swap$g' /etc/fstab
@@ -30,6 +33,7 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 firewall-cmd --permanent --add-port=8001/tcp
 firewall-cmd --permanent --add-port=8443/tcp
 firewall-cmd --permanent --add-port=6443/tcp
+firewall-cmd --permanent --add-port=10250/tcp
 firewall-cmd --reload
 # install kubernetes
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
@@ -38,7 +42,9 @@ systemctl enable --now kubelet
 # register my hostname
 echo $MYIP workshop.pflaeging.net >> /etc/hosts
 # start kubeadm 
-kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU --api-advertise-addresses=$MYIP
+kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU --apiserver-advertise-address=$MYIP
 # install network canal
 kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/canal/rbac.yaml
 kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/canal/canal.yaml
+# make master schedulable
+kubectl --kubeconfig=/etc/kubernetes/admin.conf patch nodes $(hostname) -p '{"spec":{"taints":[]}}'

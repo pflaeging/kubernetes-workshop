@@ -12,4 +12,4 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl config set-context --current --namespace=kube-system
 # make autocompletion for kubectl work!
 kubectl completion bash >> ~/.bashrc
-source ~/.bashrc
+. ~/.bashrc

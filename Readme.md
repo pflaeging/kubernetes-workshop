@@ -11,9 +11,9 @@ Here is a minimal install from:
 
 ## Content:
 
-- kubeadm-init.sh --> Shell script to install cluster
-- deploy-dashboard.sh --> deploy kubernetes-dashboard and service account
-- user-setup.sh --> initial setup for non root user
+- kubeadm-init.sh --> Shell script to install cluster (RUN AS ROOT)
+- user-setup.sh --> initial setup for non root user (run as normal user)
+- deploy-dashboard.sh --> deploy kubernetes-dashboard and service account (as normal user)
 - dashboard-login-info.sh --> how to open the dashboard from your host machine (relevant for virtualbox config)
 
 ---
