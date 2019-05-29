@@ -11,5 +11,6 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # set namespace in context
 kubectl config set-context --current --namespace=kube-system
 # make autocompletion for kubectl work!
-kubectl completion bash >> ~/.bashrc
+kubectl completion bash > ~/.kubectl.bashrc
+echo ". ~/.kubectl.bashrc" >> ~/.bashrc
 . ~/.bashrc
